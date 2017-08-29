@@ -27,7 +27,6 @@
 #==============================================================================
 
 import PID
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import spline
@@ -44,7 +43,6 @@ def test_pid(P = 0.2,  I = 0.0, D= 0.0, L=100):
                 feedback += (output - (1/i))
             if i>9:
                 pid.SetPoint = 1
-            time.sleep(0.02)
         ---
     """
     pid = PID.PID(P, I, D)
@@ -66,7 +64,6 @@ def test_pid(P = 0.2,  I = 0.0, D= 0.0, L=100):
             feedback += (output - (1/i))
         if i>9:
             pid.SetPoint = 1
-        time.sleep(0.02)
 
         feedback_list.append(feedback)
         setpoint_list.append(pid.SetPoint)
