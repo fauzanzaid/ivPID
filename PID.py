@@ -28,7 +28,6 @@
 """Ivmech PID Controller is simple implementation of a Proportional-Integral-Derivative (PID) Controller in the Python Programming Language.
 More information about PID Controller: http://en.wikipedia.org/wiki/PID_controller
 """
-import time
 
 class PID:
     """PID Controller
@@ -41,8 +40,6 @@ class PID:
         self.Kd = D
 
         self.sample_time = 0.00
-        self.current_time = time.time()
-        self.last_time = self.current_time
 
         self.clear()
 
@@ -75,28 +72,25 @@ class PID:
         """
         error = self.SetPoint - feedback_value
 
-        self.current_time = time.time()
-        delta_time = self.current_time - self.last_time
+        delta_time = self.sample_time
         delta_error = error - self.last_error
 
-        if (delta_time >= self.sample_time):
-            self.PTerm = self.Kp * error
-            self.ITerm += error * delta_time
+        self.PTerm = self.Kp * error
+        self.ITerm += error * delta_time
 
-            if (self.ITerm < -self.windup_guard):
-                self.ITerm = -self.windup_guard
-            elif (self.ITerm > self.windup_guard):
-                self.ITerm = self.windup_guard
+        if (self.ITerm < -self.windup_guard):
+            self.ITerm = -self.windup_guard
+        elif (self.ITerm > self.windup_guard):
+            self.ITerm = self.windup_guard
 
-            self.DTerm = 0.0
-            if delta_time > 0:
-                self.DTerm = delta_error / delta_time
+        self.DTerm = 0.0
+        if delta_time > 0:
+            self.DTerm = delta_error / delta_time
 
-            # Remember last time and last error for next calculation
-            self.last_time = self.current_time
-            self.last_error = error
+        # Remember last error for next calculation
+        self.last_error = error
 
-            self.output = self.PTerm + (self.Ki * self.ITerm) + (self.Kd * self.DTerm)
+        self.output = self.PTerm + (self.Ki * self.ITerm) + (self.Kd * self.DTerm)
 
     def setKp(self, proportional_gain):
         """Determines how aggressively the PID reacts to the current error with setting Proportional Gain"""
